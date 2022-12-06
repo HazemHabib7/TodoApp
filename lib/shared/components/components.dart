@@ -1,55 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 import '../../layouts/todo_app/cubit/cubit.dart';
 
-Widget defaultButton({
-  required Function function,
-  required String text,
-  bool isUpper = true,
-  Color color = Colors.blue,
-  double radius = 0.0,
-  double width = double.infinity,
-  double height = 50.0,
-}) =>
-    Container(
-      decoration: BoxDecoration(
-          color: color, borderRadius: BorderRadius.circular(radius)),
-      height: height,
-      width: width,
-      child: MaterialButton(
-        onPressed: () {
-          function();
-        },
-        child: Text(
-          isUpper ? text.toUpperCase() : text,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-    );
-
-Widget defaultOutlinedButton({
-  required Function function,
-  required String text,
-  bool isUpper = true,
-  double radius = 0.0,
-  double width = double.infinity,
-  double height = 50.0,
-}) =>
-    Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(radius)),
-      height: height,
-      width: width,
-      child: OutlinedButton(
-        onPressed: () {
-          function();
-        },
-        child: Text(
-          isUpper ? text.toUpperCase() : text,
-        ),
-      ),
-    );
 
 Widget defaultTextFormField({
   required String validateText,
@@ -57,7 +9,7 @@ Widget defaultTextFormField({
   required TextInputType keyboardType,
   required String label,
   required Icon prefixIcon,
-  Widget? suffixIcon = null,
+  Widget? suffixIcon,
   bool isPassword = false,
   Function? onSubmit,
   Function? onTap,
@@ -90,9 +42,9 @@ Widget defaultTextFormField({
           fillColor: Colors.white,
 
           labelText: label,
-          border: new OutlineInputBorder(
-        borderRadius: new BorderRadius.circular(25.0),
-        borderSide: BorderSide(color: Colors.white),
+          border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(25.0),
+        borderSide: const BorderSide(color: Colors.white),
       ),
           prefixIcon: prefixIcon,
           suffixIcon: suffixIcon,
@@ -111,10 +63,10 @@ Widget taskItem(Map task, context) {
       child: Row(
         children: [
           CircleAvatar(
-            child: Text('${task['time']}'),
             radius: 35.0,
+            child: Text('${task['time']}'),
           ),
-          SizedBox(
+          const SizedBox(
             width: 25.0,
           ),
           Expanded(
@@ -124,11 +76,11 @@ Widget taskItem(Map task, context) {
               children: [
                 Text(
                   "${task['title']}",
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   '${task['date']}',
-                  style: TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: Colors.grey),
                 ),
               ],
             ),
@@ -136,21 +88,21 @@ Widget taskItem(Map task, context) {
           IconButton(
               onPressed: () {
                 TodoCubit.get(context)
-                    .updateDatabase(status: 'done', id: task['id']);
+                    .updateDatabase(message: 'Moved to Done',status: 'done', id: task['id']);
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.check_box,
                 color: Colors.green,
               )),
-          SizedBox(
+          const SizedBox(
             width: 6.0,
           ),
           IconButton(
               onPressed: () {
                 TodoCubit.get(context)
-                    .updateDatabase(status: 'archive', id: task['id']);
+                    .updateDatabase(message: 'Moved to Archived',status: 'archive', id: task['id']);
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.archive,
                 color: Colors.blue,
               )),
@@ -164,7 +116,7 @@ Widget emptyScreen(){
   return Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
+      children: const [
         Icon(Icons.menu,size: 100.0,color: Colors.grey,),
         Text('There Are No Tasks Yet, Please Add Some Tasks',style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold,fontSize: 14.0),)
       ],
@@ -175,45 +127,13 @@ Widget emptyScreen(){
 
 Widget buildDivider(){
   return Padding(
-    padding: const EdgeInsets.only(left: 20.0),
+    padding: const EdgeInsets.only(left: 8.0),
     child: Container(
       color: Colors.grey[300],
       height: 1.0,
       width: double.infinity,
     ),
   );
-}
-
-Future navigateTo (context,widget){
-  return Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => widget
-  ));
-
-}
-
-Future navigateAndFinish (context,widget){
-  return Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => widget
-      ),
-    (route) {
-      return false;
-    },
-  );
-
-}
-
-Widget defaultTextButton({
-  required Function function,
-  required String text,
-  required Color color,
-  bool isUpper = true,
-})
-{
-  return TextButton(onPressed: (){
-    function();
-  }, child: Text(isUpper ? text.toUpperCase() : text,style: TextStyle(color: color),));
 }
 
 Future<bool?> defaultToast({

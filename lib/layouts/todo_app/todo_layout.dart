@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:bloc/bloc.dart';
 import '../../shared/components/components.dart';
 import 'cubit/cubit.dart';
 import 'cubit/states.dart';
@@ -9,7 +8,7 @@ import 'cubit/states.dart';
 
 class TodoLayout extends StatelessWidget {
 
-
+  TodoLayout({super.key});
 
   var scaffoldKey = GlobalKey<ScaffoldState>();
   var formKey = GlobalKey<FormState>();
@@ -33,7 +32,7 @@ class TodoLayout extends StatelessWidget {
             ),
             bottomNavigationBar: BottomNavigationBar(
               elevation: 20.0,
-              items: [
+              items: const [
                 BottomNavigationBarItem(
                   icon: Icon(Icons.menu),
                   label: 'Tasks',
@@ -53,7 +52,7 @@ class TodoLayout extends StatelessWidget {
                 cubit.changeBottomNavBar(index);
               },
             ),
-            body:state is GetFromDatabaseLoadingState? Center(child: CircularProgressIndicator()) :cubit.screen[cubit.currentIndex],
+            body:state is GetFromDatabaseLoadingState? const Center(child: CircularProgressIndicator()) :cubit.screen[cubit.currentIndex],
             floatingActionButton: FloatingActionButton(
               onPressed: () {
                 if (cubit.isBottomSheet)
@@ -63,8 +62,10 @@ class TodoLayout extends StatelessWidget {
                         time: timeController.text,
                         date: dateController.text).then((value) {
                         Navigator.pop(context);
+                        defaultToast(message: 'Inserted Successfully', state: ToastStates.SUCCESS);
                         cubit.changeFloatingButtonIcon(boolSheet: false);
-
+                    }).catchError((onError){
+                      defaultToast(message: onError.toString(), state: ToastStates.ERROR);
                     });
                   }
                 }
@@ -77,7 +78,7 @@ class TodoLayout extends StatelessWidget {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            SizedBox(height: 12.0),
+                            const SizedBox(height: 12.0),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 12.0),
                               child: defaultTextFormField(
@@ -85,9 +86,9 @@ class TodoLayout extends StatelessWidget {
                                   controller: titleController,
                                   keyboardType: TextInputType.text,
                                   label: 'Task Title',
-                                  prefixIcon: Icon(Icons.title)),
+                                  prefixIcon: const Icon(Icons.title)),
                             ),
-                            SizedBox(height: 12.0),
+                            const SizedBox(height: 12.0),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 12.0),
                               child: defaultTextFormField(
@@ -102,9 +103,9 @@ class TodoLayout extends StatelessWidget {
                                     });
                                   },
                                   label: 'Task Time',
-                                  prefixIcon: Icon(Icons.watch_later)),
+                                  prefixIcon: const Icon(Icons.watch_later)),
                             ),
-                            SizedBox(height: 12.0),
+                            const SizedBox(height: 12.0),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 12.0),
                               child: defaultTextFormField(
@@ -121,9 +122,9 @@ class TodoLayout extends StatelessWidget {
                                     });
                                   },
                                   label: 'Task Date',
-                                  prefixIcon: Icon(Icons.date_range)),
+                                  prefixIcon: const Icon(Icons.date_range)),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 12.0,
                             ),
 
@@ -135,30 +136,18 @@ class TodoLayout extends StatelessWidget {
                   },
                     elevation: 20.0,
                   ).closed.then((value) {
-                    // setState(() {
                     cubit.changeFloatingButtonIcon(boolSheet: false);
-                    // });
-
                   });
-                  // setState(() {
                   cubit.changeFloatingButtonIcon(boolSheet: true);
-                  // });
                 }
               },
-              child:cubit.isBottomSheet? Icon(Icons.add):Icon(Icons.edit),
+              child:cubit.isBottomSheet? const Icon(Icons.add):const Icon(Icons.edit),
             ),
           );
         },
       ),
     );
   }
-
-  Future<String> getName() async{
-    return 'Hazem Habib';
-  }
-
-
-
 
 }
 

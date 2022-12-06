@@ -16,14 +16,7 @@ class ArchivedScreen extends StatelessWidget {
         return cubit.archivedTasks.length==0 ? emptyScreen()
             : ListView.separated(
             itemBuilder: (context, index) => taskItem(cubit.archivedTasks[index],context),
-            separatorBuilder: (context, index) => Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Container(
-                color: Colors.grey[300],
-                height: 1.0,
-                width: double.infinity,
-              ),
-            ),
+            separatorBuilder: (context, index) => buildDivider(),
             itemCount: cubit.archivedTasks.length);
       },
     );

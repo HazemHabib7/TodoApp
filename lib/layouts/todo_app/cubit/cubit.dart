@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:todo_app/layouts/todo_app/cubit/states.dart';
+import 'package:todo_app/shared/components/components.dart';
 import '../../../modules/todo_app/archived/archived_screen.dart';
 import '../../../modules/todo_app/done/done_screen.dart';
 import '../../../modules/todo_app/tasks/tasks_screen.dart';
@@ -79,9 +80,13 @@ class TodoCubit extends Cubit<TodoStates> {
       emit(GetFromDatabaseSuccessState());
       print('$newTasks');
       value.forEach((element) {
-        if(element['status']=='new') newTasks.add(element);
-        else if(element['status']=='done') doneTasks.add(element);
-        else archivedTasks.add(element);
+        if(element['status']=='new') {
+          newTasks.add(element);
+        } else if(element['status']=='done') {
+          doneTasks.add(element);
+        } else {
+          archivedTasks.add(element);
+        }
 
       });
     }).catchError((onError){
@@ -111,15 +116,18 @@ class TodoCubit extends Cubit<TodoStates> {
   void updateDatabase({
   required String status,
     required int id,
+    required String message,
 }) {
     database.rawUpdate(
         'UPDATE tasks SET status = ? WHERE id = ?',
-        ['$status', '$id']).then((value) {
+        [status, '$id']).then((value) {
           emit(UpdateDatabaseSuccessState());
+          defaultToast(message: message, state: ToastStates.SUCCESS);
           print('${value.toString()} Updated successfully');
           getDataFromDatabase(database);
     }).catchError((onError){
       emit(UpdateDatabaseErrorState());
+      defaultToast(message: onError.toString(), state: ToastStates.ERROR);
       print('Error When Updating Into The Table ${onError.toString()}');
     });
   }
@@ -130,10 +138,12 @@ class TodoCubit extends Cubit<TodoStates> {
     database.rawDelete(
         'DELETE FROM tasks WHERE id = ?', ['$id'],).then((value) {
       emit(DeleteFromDatabaseSuccessState());
+      defaultToast(message: 'Deleted Successfully', state: ToastStates.SUCCESS);
       print('${value.toString()} Deleted successfully');
       getDataFromDatabase(database);
     }).catchError((onError){
       emit(DeleteFromDatabaseErrorState());
+      defaultToast(message: onError.toString(), state: ToastStates.SUCCESS);
       print('Error When Deleting Into The Table ${onError.toString()}');
     });
   }
